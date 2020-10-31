@@ -295,27 +295,26 @@ def run_command(command,terminal,commandinput):
     terminal.config(state='d')
     terminal.see('end')#转到最后一行
 def post_inputlist(inputen):
-	#弹出命令列表框
-    def setit(setmessage):
-        inputen.delete(0,'end')
-        inputen.insert('end',setmessage)
-        postwin.destroy()
-    postwin=tk.Toplevel(root,bg='#ffffff')
-    icon_for_window(postwin,'')
-    postwin.title('CommandList')
-    postwin.geometry('300x200')
-    postwin.transient(root)
+    if terminal_infos.input_list!=[0]:#如果值不为[0]
+        def setit(setmessage):
+            inputen.delete(0,'end')
+            inputen.insert('end',setmessage)
+            postwin.destroy()
+        postwin=tk.Toplevel(root,bg='#ffffff')
+        icon_for_window(postwin,'')
+        postwin.title('CommandList')
+        postwin.geometry('300x200')
+        postwin.transient(root)
 
-    commandlist=tk.Listbox(postwin,fg='#800080',selectforeground='white',selectbackground='#800080',font=('terminal',16))
-    commandlist.bind('<Return>',lambda v=0:setit(commandlist.get(commandlist.curselection())))
-    commandlist.bind('<Right>',lambda v=0:setit(commandlist.get(commandlist.curselection())))
-    commandlist.bind('<Left>',lambda v=0:setit(commandlist.get(commandlist.curselection())))
-    commandlist.pack(fill='both',expand=1)
+        commandlist=tk.Listbox(postwin,fg='#800080',selectforeground='white',selectbackground='#800080',font=('terminal',16))
+        commandlist.bind('<Return>',lambda v=0:setit(commandlist.get(commandlist.curselection())))
+        commandlist.bind('<Right>',lambda v=0:setit(commandlist.get(commandlist.curselection())))
+        commandlist.bind('<Left>',lambda v=0:setit(commandlist.get(commandlist.curselection())))
+        commandlist.pack(fill='both',expand=1)
 
-	#整数0是为了防止BUG
-    for temp in terminal_infos.input_list:
-		if temp!=0:
-        	commandlist.insert('end',f'{temp}')
+        for temp in terminal_infos.input_list:#循环插入
+            if temp!=0:#如果temp不是整数0
+                commandlist.insert('end',f'{temp}')
 
 root=tk.Tk()#创建TK窗口
 root.title(f'EasyTerminal {terminal_infos.version}')#设置标题
@@ -342,7 +341,7 @@ TerminalText.insert('end',f'$ ')
 #新建输入命令框(Entry)
 command_input=tk.Entry(TerminalText,font=('consolas',13),fg='white',bg='black',insertbackground='white',selectforeground='black',selectbackground='white',relief='flat',width=66)
 command_input.bind('<Return>',lambda v=0:run_command(command_input.get(),TerminalText,command_input))
-command_input.bind('<F7>',lambda v=0:post_inputlist(command_input))
+root.bind('<F7>',lambda v=0:post_inputlist(command_input))#当在窗口内按下F7键时，执行函数"post_inputlist"
 
 TerminalText.window_create('end',window=command_input)#将输入命令框放入文本框最后一个字符的后面
 
