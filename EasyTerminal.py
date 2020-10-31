@@ -35,6 +35,7 @@ def run_command(command,terminal,commandinput):
         terminal.insert('end',f'\n{os.getcwd()}\n','green')
         terminal.insert('end',f'$ ')
         terminal.window_create('end',window=commandinput)
+        terminal.see('end')
         commandinput.focus_set()#"""
     errortext=f'错误指令"{command.strip()}"。'
 
@@ -96,7 +97,7 @@ def run_command(command,terminal,commandinput):
                                 try:
                                     exec(varname+'='+varvalue,terminal_infos.running_space)
                                 except:
-                                    terminal.insert('end','\n接收输入失败。','red')
+                                    terminal.insert('end','\n赋值失败。','red')
                                 commandinput.bind('<Return>',lambda v=0:run_command(command_input.get(),TerminalText,command_input))
                                 command_input.bind('<Return>',lambda v=0:run_command(command_input.get(),TerminalText,command_input))
                                 contiune_command()
@@ -109,7 +110,7 @@ def run_command(command,terminal,commandinput):
                             #commandinput.bind("<Return>",lambda v=0:tovar(command[command.index(' ',0)+1:command.index('=',0)],command[command.index('=',0)+1:]))
                         except:
                             from traceback import format_exc
-                            terminal.insert('end','\n接收输入失败。%s'%format_exc(),'red')
+                            terminal.insert('end','\n赋值失败。%s'%format_exc(),'red')
                             contiune_command()
                     else:
                         terminal.insert('end',command)
@@ -139,9 +140,8 @@ def run_command(command,terminal,commandinput):
                             for temp in resultprint:
                                 terminal.insert('end',temp)
                         except:
-                            terminal.insert('end','输出了个寂寞。')
+                            terminal.insert('end','无法输出。','red')
                     elif command.lower().strip()=='echo':
-                        terminal.insert('end',command)
                         pass
                     else:
                         terminal.insert('end',command)
@@ -166,7 +166,7 @@ def run_command(command,terminal,commandinput):
                                         commandinput.delete(0,'end')
                                         terminal.insert('end','\n')
                                         terminal.insert('end',f'\n')
-                                        terminal.insert('end',f'{os.getcwd()}::','green')
+                                        terminal.insert('end',f'{os.getcwd()}','green')
                                         terminal.insert('end',f'\n')
                                         terminal.insert('end',f'$ ')
                                         terminal.window_create('end',window=commandinput)
@@ -189,6 +189,65 @@ def run_command(command,terminal,commandinput):
                             terminal.insert('end',command)
                             terminal.insert('end','\n')
                             contiune_command()
+                        else:
+                            terminal.insert('end',command)
+                            terminal.insert('end','\n'+errortext,'red')
+                            contiune_command()
+                    elif command.lower().strip()[0:5]=='pause':
+                        terminal.delete('end')
+                        if len(command.lower().strip())>5:
+                            try:
+                                def contiune_(key):
+                                    commandinput.bind('<Key>','')
+                                    commandinput['width']=66
+                                    print('de')
+                                    commandinput.bind('<Return>',lambda v=0:run_command(command_input.get(),TerminalText,command_input))
+                                    terminal['state']='n'
+                                    terminal.insert('end',commandinput.get())
+                                    commandinput.delete(0,'end')
+                                    terminal.insert('end','\n')
+                                    terminal.insert('end',f'\n')
+                                    terminal.insert('end',f'{os.getcwd()}','green')
+                                    terminal.insert('end',f'\n')
+                                    terminal.insert('end',f'$ ')
+                                    commandinput.delete(0,'end')
+                                    terminal.window_create('end',window=commandinput)
+                                    commandinput.focus_set()
+                                    terminal.see('end')
+                                    terminal['state']='d'
+                                terminal.insert('end',command)
+                                terminal.insert('end','\n%s'%(command.lstrip()[6:]),'cyan')
+                                commandinput['width']=1
+                                terminal.window_create('end',window=commandinput)
+                                commandinput.bind("<Key>",contiune_)
+                            except:
+                                pass
+                        elif command.lower().strip()=='pause':
+                            try:
+                                def contiune_(key):
+                                    commandinput.bind('<Key>','')
+                                    commandinput['width']=66
+                                    commandinput.delete(0,'end')
+                                    commandinput.bind('<Return>',lambda v=0:run_command(command_input.get(),TerminalText,command_input))
+                                    terminal['state']='n'
+                                    terminal.insert('end',commandinput.get())
+                                    commandinput.delete(0,'end')
+                                    terminal.insert('end','\n')
+                                    terminal.insert('end',f'\n')
+                                    terminal.insert('end',f'{os.getcwd()}','green')
+                                    terminal.insert('end',f'\n')
+                                    terminal.insert('end',f'$ ')
+                                    terminal.window_create('end',window=commandinput)
+                                    commandinput.focus_set()
+                                    terminal.see('end')
+                                    terminal['state']='d'
+                                terminal.insert('end',command)
+                                terminal.insert('end','\nPress any key to contiune. . .')
+                                commandinput['width']=1
+                                terminal.window_create('end',window=commandinput)
+                                commandinput.bind("<Key>",contiune_)
+                            except:
+                                pass
                         else:
                             terminal.insert('end',command)
                             terminal.insert('end','\n'+errortext,'red')
