@@ -1,0 +1,2 @@
+# PythonEasyTerminal
+使用Python的Tkinter模块实现终端效果
